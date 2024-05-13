@@ -321,6 +321,18 @@ export default defineWorld({
       },
     },
     /**
+     * Used in the game vote system to determine if a player has voted
+     * for a proposal 
+     */
+    PlayerVote: {
+      key: ["matchEntity", "entity"],
+      schema: {
+        matchEntity: "bytes32",
+        entity: "bytes32",
+        value: "bytes32",
+      },
+    },
+    /**
      * The position of an entity.
      */
     Position: {

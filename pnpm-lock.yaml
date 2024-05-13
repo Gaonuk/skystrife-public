@@ -852,9 +852,15 @@ importers:
 
   packages/plugins:
     dependencies:
+      '@latticexyz/common':
+        specifier: 2.0.10-main-a3f8d77d
+        version: 2.0.10-main-a3f8d77d(typescript@5.2.2)(zod@3.22.2)
       '@latticexyz/recs':
         specifier: 2.0.10-main-a3f8d77d
         version: 2.0.10-main-a3f8d77d(typescript@5.2.2)(zod@3.22.2)
+      '@latticexyz/world':
+        specifier: 2.0.10-main-a3f8d77d
+        version: 2.0.10-main-a3f8d77d(typescript@5.2.2)
       client:
         specifier: workspace:*
         version: link:../client

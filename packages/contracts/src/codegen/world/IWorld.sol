@@ -20,6 +20,7 @@ import { IOfficialLevelSystem } from "./IOfficialLevelSystem.sol";
 import { IPlayerRegisterSystem } from "./IPlayerRegisterSystem.sol";
 import { ISeasonPassSystem } from "./ISeasonPassSystem.sol";
 import { ITemplateSpawnSystem } from "./ITemplateSpawnSystem.sol";
+import { IVoteSystem } from "./IVoteSystem.sol";
 import { IWithdrawSystem } from "./IWithdrawSystem.sol";
 
 /**
@@ -46,5 +47,6 @@ interface IWorld is
   IPlayerRegisterSystem,
   ISeasonPassSystem,
   ITemplateSpawnSystem,
+  IVoteSystem,
   IWithdrawSystem
 {}

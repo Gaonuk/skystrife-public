@@ -34,6 +34,7 @@ import {
   BYTES32_ZERO,
   EMOJI,
   MOVE_SYSTEM_ID,
+  VOTE_SYSTEM_ID,
   SEASON_PASS_ONLY_SYSTEM_ID,
   SPAWN_SETTLEMENT,
   UNLIMITED_DELEGATION,
@@ -132,6 +133,29 @@ export async function createNetworkLayer(config: NetworkConfig) {
       ],
     });
   }
+
+  async function vote(entity: Entity, playerSelected: Entity) {
+    if (!currentMatchEntity) return;
+
+    const { externalWalletClient } = useStore.getState();
+    if (!externalWalletClient?.account) return;
+
+    await executeSystem({
+      entity,
+      systemCall: "callFrom",
+      systemId: "Vote",
+      args: [
+        encodeSystemCallFrom({
+          abi: IWorldAbi,
+          from: externalWalletClient.account.address,
+          systemId: VOTE_SYSTEM_ID,
+          functionName: "vote",
+          args: [currentMatchEntity as Hex, playerSelected as Hex],
+        }),
+      ],
+    });
+  }
+
 
   async function attack(attacker: Entity, defender: Entity) {
     if (!currentMatchEntity) return;
@@ -268,6 +292,15 @@ export async function createNetworkLayer(config: NetworkConfig) {
       owner ? decodeMatchEntity(owner).entity : BYTES32_ZERO,
       { x: position.x, y: position.y },
     ]);
+  }
+
+  function getMatchVotes(): Entity[] {
+    if (!currentMatchEntity) return [];
+    const { PlayerVote } = components;
+
+    const votes = [...runQuery([Has(PlayerVote), HasValue(components.Match, { matchEntity: currentMatchEntity })])];
+
+    return votes
   }
 
   function getOwningPlayer(entity: Entity): Entity | undefined {
@@ -658,7 +691,7 @@ export async function createNetworkLayer(config: NetworkConfig) {
       moveAndAttack,
       attack,
       buildAt,
-
+      vote,
       dev: {
         spawnTemplateAt,
       },
@@ -668,6 +701,8 @@ export async function createNetworkLayer(config: NetworkConfig) {
 
       getTurnAtTime,
       getTurnAtTimeForCurrentMatch,
+
+      getMatchVotes,
 
       getOwningPlayer,
       isOwnedBy,

@@ -24,6 +24,7 @@ import { CreatedByAddress } from "./tables/CreatedByAddress.sol";
 import { OwnedBy } from "./tables/OwnedBy.sol";
 import { Player } from "./tables/Player.sol";
 import { PlayerReady } from "./tables/PlayerReady.sol";
+import { PlayerVote } from "./tables/PlayerVote.sol";
 import { Position, PositionData } from "./tables/Position.sol";
 import { EntitiesAtPosition } from "./tables/EntitiesAtPosition.sol";
 import { RequiresSetup } from "./tables/RequiresSetup.sol";
