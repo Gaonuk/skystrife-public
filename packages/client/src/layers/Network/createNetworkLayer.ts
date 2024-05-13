@@ -140,7 +140,9 @@ export async function createNetworkLayer(config: NetworkConfig) {
     const { externalWalletClient } = useStore.getState();
     if (!externalWalletClient?.account) return;
 
-    await executeSystem({
+    console.log(`Voting entity ${entity} for player ${playerSelected}`);
+
+    const txHash = await executeSystem({
       entity,
       systemCall: "callFrom",
       systemId: "Vote",
@@ -150,7 +152,7 @@ export async function createNetworkLayer(config: NetworkConfig) {
           from: externalWalletClient.account.address,
           systemId: VOTE_SYSTEM_ID,
           functionName: "vote",
-          args: [currentMatchEntity as Hex, playerSelected as Hex],
+          args: [currentMatchEntity as Hex,  decodeMatchEntity(playerSelected).entity as Hex],
         }),
       ],
     });

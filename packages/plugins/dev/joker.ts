@@ -11,7 +11,7 @@ function createPlugin(pluginLayer: PluginLayer) {
         html,
         render,
         h,
-        hooks: { useState, useMemo },
+        hooks: { useState, useMemo, useEffect },
       },
       hooks: { usePlayersInMatch, },
       components: { Button, Select }
@@ -44,18 +44,26 @@ function createPlugin(pluginLayer: PluginLayer) {
 
       function App() {
         const playersInMatch = usePlayersInMatch();
+        const [countdown, setCountdown] = useState(120); // 2 minutes in seconds
         const [selectedPlayer, setSelectedPlayer] = useState<Entity>();
-        const [selectedPlayerName, setSelectedPlayerName] = useState<string>("");
         const currentPlayerEntity = getCurrentPlayerEntity();
         const playerVotes = getMatchVotes();
-        console.log('playerVotes', playerVotes);
 
+        useEffect(() => {
+          const interval = setInterval(() => {
+            setCountdown((prevCountdown) => prevCountdown - 1);
+          }, 1000);
+
+          // Cleanup
+          return () => clearInterval(interval);
+        }, []);
+
+        // fetch match votes every 5 seconds
         const hasPlayerVoted = useMemo(() => {
           if (!currentPlayerEntity) return false;
           return Boolean(playerVotes.find((i) => i === currentPlayerEntity));
         }, [playerVotes]);
 
-        console.log('hasPlayerVoted', hasPlayerVoted);
         const executeVote = () => {
           if (!currentPlayerEntity) return;
           if (!selectedPlayer) {
@@ -67,7 +75,12 @@ function createPlugin(pluginLayer: PluginLayer) {
         };
 
         const options = useMemo(() => {
-          return playersInMatch.map((player) => ({ value: player, label: getPlayerInfo(player)?.name }));
+          const playerValues = [{
+            value: "",
+            label: "Select Player"
+          }]
+          const newArr = playerValues.concat(playersInMatch.map((player) => ({ value: player, label: getPlayerInfo(player)?.name })));
+          return newArr;
         }, [playersInMatch]);
 
         return html`<div style=${{ maxWidth: "320px", display: "flex", flexDirection: "column" }}>
@@ -79,10 +92,9 @@ function createPlugin(pluginLayer: PluginLayer) {
             ...${{
               label: "Select Player",
               options,
-              value: selectedPlayerName,
+              value: selectedPlayer,
               onChange: (value: Entity) => { 
                 setSelectedPlayer(value)
-                setSelectedPlayerName(getPlayerInfo(value)?.name || "")
               },
               style: { width: "100%" },
               containerStyle: { width: "100%" },
